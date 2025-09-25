@@ -32,8 +32,6 @@ void hashmap_set(HashmapT* map, const char* key, void* value){
 
     unsigned long index = hash(key);
     NodeT* node = map->buckets[index];
-    assert(node);
-    checking = 1;
 
     while(node != NULL){
         if(strcmp(node->key,key) == 0){
@@ -59,4 +57,22 @@ void hashmap_set(HashmapT* map, const char* key, void* value){
     new_node->next = map->buckets[index];
     map->buckets[index] = new_node;
     map->count++;
+}
+
+void* hashmap_get(HashmapT* map, const char* key){
+
+    unsigned long index = hash(key);
+    NodeT* node = map->buckets[index];
+    if(node == NULL){
+        return NULL;
+    }
+
+    while (node != NULL){
+        if(strcmp(node->key, key) == 0){
+            return node->value;
+        }
+    node = node->next;
+    }
+
+    return  NULL;
 }
