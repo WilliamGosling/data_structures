@@ -76,3 +76,30 @@ void* hashmap_get(HashmapT* map, const char* key){
 
     return  NULL;
 }
+
+void hashmap_delete(HashmapT* map, const char* key){
+
+    unsigned long index = hash(key);
+    NodeT* node = map->buckets[index];
+    NodeT* prev = NULL; 
+
+    if(node == NULL){
+        return;
+    }
+
+    while(node != NULL){
+        if(strcmp(node->key, key) == 0){
+            if(prev == NULL){
+                map->buckets[index] = node->next;
+            } else {
+                prev->next = node->next;
+            }
+            free(node->key);
+            free(node);
+            map->count--;
+            return;
+        }
+        prev = node;
+        node = node->next;
+    }
+}
