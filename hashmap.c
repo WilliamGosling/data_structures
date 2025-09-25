@@ -27,3 +27,36 @@ HashmapT* hashmap_create(size_t initial_capacity){
     hashmap->buckets = buckets;
     return hashmap;
 }
+
+void hashmap_set(HashmapT* map, const char* key, void* value){
+
+    unsigned long index = hash(key);
+    NodeT* node = map->buckets[index];
+    assert(node);
+    checking = 1;
+
+    while(node != NULL){
+        if(strcmp(node->key,key) == 0){
+            node->value = value;
+            return;
+            }
+        node = node->next;
+    }
+
+    NodeT* new_node = malloc(sizeof(NodeT));
+
+    if(new_node == NULL){
+        return;
+    }
+    
+    new_node->key = strdup(key);
+    if(new_node->key == NULL){
+        free(new_node);
+        return;
+    }
+
+    new_node->value = value;
+    new_node->next = map->buckets[index];
+    map->buckets[index] = new_node;
+    map->count++;
+}

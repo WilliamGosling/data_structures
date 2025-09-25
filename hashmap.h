@@ -13,3 +13,4 @@ typedef struct Hashmap{
 }HashmapT;
 
 unsigned long hash(const char* key);
+void hashmap_set(HashmapT* map, const char* key, void* value);
