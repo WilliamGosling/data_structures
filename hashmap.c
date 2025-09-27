@@ -124,3 +124,36 @@ void hashmap_destroy(HashmapT* map){
     free(map->buckets);
     free(map);
 }
+
+HashMapIterator* hashmap_iterator_create(HashmapT* map){
+
+    HashMapIterator* iterator = malloc(sizeof(HashMapIterator));
+    iterator->map = map;
+    iterator->bucket_index = 0;
+    iterator->current_node = map->buckets[0];
+    return iterator;
+}
+
+NodeT* hashmap_iterate_next(HashMapIterator* iterator){
+
+    while(iterator->current_node == NULL){
+        if(iterator->bucket_index >= iterator->map->capacity){
+            return NULL;
+        }
+        iterator->current_node = iterator->map->buckets[iterator->bucket_index];
+        iterator->bucket_index++;
+    }
+    NodeT* return_node = iterator->current_node;
+    iterator->current_node = return_node->next;
+
+    return return_node;
+}
+
+void hashmap_iterator_destroy(HashMapIterator* iterator){
+
+    if(iterator == NULL){
+        return;
+    }
+
+    free(iterator);
+}
