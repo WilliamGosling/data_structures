@@ -1,4 +1,7 @@
 #include "hashmap.h"
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 size_t capcity_mod;
 
@@ -22,7 +25,7 @@ HashmapT* hashmap_create(size_t initial_capacity){
     hashmap->count = 0;
     capcity_mod = initial_capacity;
 
-    NodeT** buckets = calloc(sizeof(struct Node*) * initial_capacity);
+    NodeT** buckets = calloc(initial_capacity, sizeof(struct Node*));
     assert(buckets);
     hashmap->buckets = buckets;
     return hashmap;
@@ -102,4 +105,22 @@ void hashmap_delete(HashmapT* map, const char* key){
         prev = node;
         node = node->next;
     }
+}
+
+void hashmap_destroy(HashmapT* map){
+    if(map == NULL){
+        return;
+    }
+
+    for(long unsigned int i = 0;i < map->capacity;i++){
+        NodeT* node = map->buckets[i];
+        while(node != NULL){
+            NodeT* next_node = node->next;
+            free(node->key);
+            free(node);
+            node = next_node;
+        }
+    }
+    free(map->buckets);
+    free(map);
 }
