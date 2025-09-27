@@ -183,7 +183,7 @@ void hashmap_iterator_destroy(HashMapIterator* iterator){
     free(iterator);
 }
 
-static void hashmap_resize(HashmapT* map, size_t new_capacity){
+void hashmap_resize(HashmapT* map, size_t new_capacity){
 
     NodeT** new_buckets = calloc(new_capacity, sizeof(struct Node*));
     assert(new_buckets);
@@ -211,4 +211,49 @@ int hashmap_has_key(HashmapT* map, const char* key){
         return 0;
     }
     return 1;
+}
+
+void hashmap_clear(HashmapT* map){
+
+    if(map == NULL){
+        return;
+    }
+
+    pthread_mutex_lock(&map->mutex);
+    for(unsigned long int i = 0;i < map->capacity;i++){
+        NodeT* node = map->buckets[i];
+        while(node != NULL){
+            NodeT* next_node = node->next;
+            free(node->key);
+            free(node);
+            node = next_node;
+        }
+        map->buckets[i] = NULL;
+    }
+    map->count = 0;
+    pthread_mutex_unlock(&map->mutex);
+}
+
+char** hashmap_keys(HashmapT* map){
+
+    pthread_mutex_lock(&map->mutex);
+
+    char** key_array = malloc(sizeof(char*) * (map->count + 1));
+    if(key_array == NULL){
+        pthread_mutex_unlock(&map->mutex);
+        return NULL;
+    }
+
+    HashMapIterator* iterator = hashmap_iterator_create(map);
+    size_t i = 0;
+    NodeT* current_node;
+
+    while((current_node = hashmap_iterate_next(iterator)) != NULL){
+        key_array[i] = current_node->key;
+        i++;
+        }
+    key_array[i] = NULL;
+    hashmap_iterator_destroy(iterator);
+    pthread_mutex_unlock(&map->mutex);
+    return key_array;
 }

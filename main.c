@@ -10,7 +10,7 @@ int main(){
     HashmapT* map = hashmap_create(initial_capacity);
     hashmap_set(map,key, value);
     char* output = (char*)hashmap_get(map, key);
-    printf("Value of %s is %s",key, output);
+    printf("Value of %s is %s\n",key, output);
     hashmap_delete(map, key);
     hashmap_destroy(map);
     return 0;

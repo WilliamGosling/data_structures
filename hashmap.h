@@ -29,5 +29,7 @@ void hashmap_destroy(HashmapT* map);
 HashMapIterator* hashmap_iterator_create(HashmapT* map);
 NodeT* hashmap_iterate_next(HashMapIterator* iterator);
 void hashmap_iterator_destroy(HashMapIterator* iterator);
-static void hashmap_resize(HashmapT* map, size_t new_capacity);
+void hashmap_resize(HashmapT* map, size_t new_capacity);
 int hashmap_has_key(HashmapT* map, const char* key);
+void hashmap_clear(HashmapT* map);
+char** hashmap_keys(HashmapT* map); // User must free returned array
