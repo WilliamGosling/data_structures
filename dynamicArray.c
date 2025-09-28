@@ -46,3 +46,29 @@ int dynamic_array_append(DynamicArrayT* array, int value){
     array->size++;
     return 0;
 }
+
+int dynamic_array_get(DynamicArrayT* array, size_t index, int* out_value){
+
+    if(array == NULL || out_value == NULL){
+        return -1;
+    }
+    if(index >= array->size){
+        return -1;
+    }
+
+    *out_value = array->data[index];
+    return 0;
+}
+
+int dynamic_array_set(DynamicArrayT* array, size_t index, int value){
+
+    if(array == NULL){
+        return -1;
+    }
+    if(index >= array->size){
+        return -1;
+    }
+
+    array->data[index] = value;
+    return 0;
+}
