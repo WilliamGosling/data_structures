@@ -72,3 +72,19 @@ int dynamic_array_set(DynamicArrayT* array, size_t index, int value){
     array->data[index] = value;
     return 0;
 }
+
+int dynamic_array_remove(DynamicArrayT* array, size_t index){
+
+    if(array == NULL){
+        return -1;
+    }
+    if(index >= array->size){
+        return -1;
+    }
+
+    for(size_t i = index;i < array->size - 1;i++){
+        array->data[i] = array->data[i + 1];
+    }
+    array->size--;
+    return 0;
+}
