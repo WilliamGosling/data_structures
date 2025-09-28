@@ -7,3 +7,5 @@ typedef struct DynamicArray{
 }DynamicArrayT;
 
 DynamicArrayT* dynamic_array_create(size_t initial_capacity);
+void dynamic_array_destroy(DynamicArrayT* array);
+int dynamic_array_append(DynamicArrayT* array, int value);
