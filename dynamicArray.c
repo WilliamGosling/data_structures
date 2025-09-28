@@ -86,5 +86,28 @@ int dynamic_array_remove(DynamicArrayT* array, size_t index){
         array->data[i] = array->data[i + 1];
     }
     array->size--;
+
+
+    if(array->capacity > 16 && array->size <= array->capacity / 4){
+        size_t new_capacity = array->capacity / 2;
+        if(dynamic_array_shrink(array, new_capacity) == -1){
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int dynamic_array_shrink(DynamicArrayT* array, int new_capacity){
+
+    if(array == NULL){
+        return -1;
+    }
+
+    int* new_array = realloc(array->data,sizeof(int) * new_capacity);
+    if(new_array == NULL){
+        return -1;
+    }
+    array->data = new_array;
+    array->capacity = new_capacity;
     return 0;
 }
