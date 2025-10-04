@@ -1,5 +1,9 @@
 #include "binarySearchTree.h"
+#include <stdlib.h>
 
+// Helper function declarations
+static BSTNode* create_node(int value);
+static void destroy_nodes_bst(BSTNode* node);
 
 BSTree* bst_create(){
     
@@ -23,18 +27,6 @@ void bst_destroy(BSTree* tree){
     destroy_nodes_bst(tree->root);
 
     free(tree);
-}
-
-void destroy_nodes_bst(BSTNode* node){
-
-    if(node == NULL){
-        return;
-    }
-
-    destroy_nodes_bst(node->left);
-    destroy_nodes_bst(node->right);
-
-    free(node);
 }
 
 int bst_insert(BSTree* tree, int value){
@@ -72,22 +64,10 @@ int bst_insert(BSTree* tree, int value){
     }
 }
 
-BSTNode* create_node(int value){
-
-    BSTNode* node = malloc(sizeof(BSTNode));
-    if(node == NULL){
-        return NULL;
-    }
-    node->data = value;
-    node->left = NULL;
-    node->right = NULL;
-    return node;
-}
-
 int bst_search(BSTree* tree, int value){
 
     if(tree == NULL || tree->root == NULL){
-        return -1;
+        return 0;
     }
     
     BSTNode* current = tree->root;
@@ -139,7 +119,7 @@ int bst_remove(BSTree* tree, int value){
         tree->size--;
         return 0;
     }
-    else if(current->left != NULL ^ current->right != NULL){
+    else if(current->left == NULL || current->right == NULL){
         BSTNode* child = (current->left != NULL) ? current->left : current->right;
         if(parent == NULL){
             tree->root = child;
@@ -172,4 +152,30 @@ int bst_remove(BSTree* tree, int value){
         return 0;
     }
     return -1;
+}
+
+// Private helper functions
+
+static void destroy_nodes_bst(BSTNode* node){
+
+    if(node == NULL){
+        return;
+    }
+
+    destroy_nodes_bst(node->left);
+    destroy_nodes_bst(node->right);
+
+    free(node);
+}
+
+static BSTNode* create_node(int value){
+
+    BSTNode* node = malloc(sizeof(BSTNode));
+    if(node == NULL){
+        return NULL;
+    }
+    node->data = value;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
 }
