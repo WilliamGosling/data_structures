@@ -53,3 +53,42 @@ int graph_add_vertex(GraphT* graph, int vertex_id){
     graph->num_vertices++;
     return 0;
 }
+
+int graph_add_edge(GraphT* graph, int from_vertex_id, int to_vertex_id, int weight){
+
+    if(graph == NULL){
+        return -1;
+    }
+
+    GraphVertex* start_vertex = graph_find_vertex(graph, from_vertex_id);
+    GraphVertex* end_vertex = graph_find_vertex(graph, to_vertex_id); 
+    if(start_vertex == NULL || end_vertex == NULL){
+        return -1;
+    }
+
+
+    EdgeT edge;
+    edge.weight = weight;
+    edge.neighbour = end_vertex;
+    if(dynamic_array_append(start_vertex->edges, &edge) == -1){
+        return -1;
+    }
+    
+    graph->num_edges++;
+    return 0;
+}
+
+static GraphVertex* graph_find_vertex(GraphT* graph, int vertex_id){
+
+    if(graph == NULL){
+        return NULL;
+    }
+
+    for(size_t i = 0;i < graph->num_vertices;i++){
+        GraphVertex* vertex = (GraphVertex*)dynamic_array_get_element_ptr(graph->vertices, i);
+        if(vertex->id == vertex_id){
+            return vertex;
+        }
+    }
+    return NULL;
+}
