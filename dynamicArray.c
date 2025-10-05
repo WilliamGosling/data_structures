@@ -37,7 +37,7 @@ int dynamic_array_append(DynamicArrayT* array, int value){
 
     if(array->size == array->capacity){
         size_t new_capacity = array->capacity == 0 ? 1 : array->capacity * 2;
-        int* temp = realloc(array->data,sizeof(int) * (array->capacity * 2));
+        int* temp = realloc(array->data,sizeof(int) * new_capacity);
         if(temp == NULL){
             return -1;
         }
