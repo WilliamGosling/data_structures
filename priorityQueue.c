@@ -1,4 +1,5 @@
 #include "priorityQueue.h"
+#include <stdlib.h>
 
 PriorityQueueT* pq_create(size_t initial_capacity){
 

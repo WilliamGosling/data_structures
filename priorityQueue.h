@@ -3,16 +3,16 @@
 
 #include <stddef.h>
 
+typedef struct PQ_Item{
+    int priority;
+    void* data;
+}PQ_ItemT;
+
 typedef struct PriorityQueue{
     PQ_ItemT* items;
     size_t size;
     size_t capacity;
 } PriorityQueueT;
-
-typedef struct PQ_Item{
-    int priority;
-    void* data;
-}PQ_ItemT;
 
 // Creates a priority queue and returns a pointer to it
 // Returns a pointer to a PriorityQueueT struct, NULL if memory allocation failed
