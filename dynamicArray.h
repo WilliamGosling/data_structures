@@ -24,4 +24,6 @@ int dynamic_array_remove(DynamicArrayT* array, size_t index);
 // Returns 0 on success, -1 if shrinking array fails
 int dynamic_array_shrink(DynamicArrayT* array, int new_capacity);
 
+void* dynamic_array_get_element_ptr(DynamicArrayT* array, size_t index);
+
 #endif

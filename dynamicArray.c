@@ -69,7 +69,7 @@ int dynamic_array_get(DynamicArrayT* array, size_t index, void* out_value){
     return 0;
 }
 
-int dynamic_array_set(DynamicArrayT* array, size_t index, int value){
+int dynamic_array_set(DynamicArrayT* array, size_t index, void* data){
 
     if(array == NULL){
         return -1;
@@ -78,7 +78,8 @@ int dynamic_array_set(DynamicArrayT* array, size_t index, int value){
         return -1;
     }
 
-    array->data[index] = value;
+    char* index_memory = (char*)array->data + (index * array->element_size);
+    memcpy(index_memory, data, array->element_size);
     return 0;
 }
 
@@ -91,9 +92,9 @@ int dynamic_array_remove(DynamicArrayT* array, size_t index){
         return -1;
     }
 
-    for(size_t i = index;i < array->size - 1;i++){
-        array->data[i] = array->data[i + 1];
-    }
+    char* index_memory = (char*)array->data + (index * array->element_size);
+    char* moving_memory = (char*)array->data + ((index + 1) * array->element_size);
+    memmove(index_memory, moving_memory, array->element_size * ((array->size - 1) - index));
     array->size--;
 
 
@@ -119,4 +120,15 @@ int dynamic_array_shrink(DynamicArrayT* array, int new_capacity){
     array->data = new_array;
     array->capacity = new_capacity;
     return 0;
+}
+
+void* dynamic_array_get_element_ptr(DynamicArrayT* array, size_t index){
+    
+    if(array == NULL || index >= array->size){
+        return NULL;
+    }
+
+    char* index_memory = (char*)array->data + (index * array->element_size);
+
+    return index_memory;
 }
