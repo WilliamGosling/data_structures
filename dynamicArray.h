@@ -3,9 +3,10 @@
 #include <stdio.h>
 
 typedef struct DynamicArray{
-    int* data;
+    void* data;
     size_t size;
     size_t capacity;
+    size_t element_size;
 }DynamicArrayT;
 
 // Returns pointer to the array, NULL if memory allocation fails

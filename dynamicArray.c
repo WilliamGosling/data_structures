@@ -1,7 +1,7 @@
 #include "dynamicArray.h"
 #include <stdio.h>
 
-DynamicArrayT* dynamic_array_create(size_t initial_capacity){
+DynamicArrayT* dynamic_array_create(size_t initial_capacity, size_t element_size){
 
     DynamicArrayT* array = malloc(sizeof(DynamicArrayT));
     if(array == NULL){
@@ -11,7 +11,7 @@ DynamicArrayT* dynamic_array_create(size_t initial_capacity){
     if(initial_capacity == 0){
         array->data = NULL;
     } else {
-        array->data = malloc(sizeof(int) * initial_capacity);
+        array->data = malloc(element_size * initial_capacity);
         if(array->data == NULL){
             free(array);
             return NULL;
@@ -20,6 +20,7 @@ DynamicArrayT* dynamic_array_create(size_t initial_capacity){
 
     array->size = 0;
     array->capacity = initial_capacity;
+    array->element_size = element_size;
 
     return array;
 }
@@ -33,23 +34,27 @@ void dynamic_array_destroy(DynamicArrayT* array){
     free(array);
 }
 
-int dynamic_array_append(DynamicArrayT* array, int value){
+int dynamic_array_append(DynamicArrayT* array, void* data){
 
     if(array->size == array->capacity){
         size_t new_capacity = array->capacity == 0 ? 1 : array->capacity * 2;
-        int* temp = realloc(array->data,sizeof(int) * new_capacity);
+        void* temp = realloc(array->data, array->element_size * new_capacity);
         if(temp == NULL){
             return -1;
         }
         array->data = temp;
         array->capacity = new_capacity;
     }
-    array->data[array->size] = value;
+
+    int used_memory = (array->element_size * array->size);
+    char* free_block = (char*)array->data + used_memory;
+
+    memcpy(free_block,data, array->element_size);
     array->size++;
     return 0;
 }
 
-int dynamic_array_get(DynamicArrayT* array, size_t index, int* out_value){
+int dynamic_array_get(DynamicArrayT* array, size_t index, void* out_value){
 
     if(array == NULL || out_value == NULL){
         return -1;
@@ -58,7 +63,9 @@ int dynamic_array_get(DynamicArrayT* array, size_t index, int* out_value){
         return -1;
     }
 
-    *out_value = array->data[index];
+    char* index_memory = (char*)array->data + (index * array->element_size);
+    memcpy(out_value, index_memory, array->element_size);
+
     return 0;
 }
 
