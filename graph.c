@@ -92,3 +92,23 @@ static GraphVertex* graph_find_vertex(GraphT* graph, int vertex_id){
     }
     return NULL;
 }
+
+int graph_print_neighbours(GraphT* graph, int vertex_id){
+
+    if(graph == NULL){
+        return -1;
+    }
+    GraphVertex* vertex = graph_find_vertex(graph, vertex_id);
+    if(vertex == NULL){
+        return -1;
+    }
+    printf("Neighbours of vertex %d\n", vertex_id);
+
+    for(size_t i = 0;i < vertex->edges->size; i++){
+        EdgeT* edge = (EdgeT*)dynamic_array_get_element_ptr(vertex->edges, i);
+        int neighbour_id = edge->neighbour->id;
+        printf(" ID: %d Weight: %d\n", neighbour_id, edge->weight);
+
+    }
+    return 0;
+}
