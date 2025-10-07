@@ -113,7 +113,7 @@ int dynamic_array_shrink(DynamicArrayT* array, int new_capacity){
         return -1;
     }
 
-    int* new_array = realloc(array->data,sizeof(int) * new_capacity);
+    void* new_array = realloc(array->data,array->element_size * new_capacity);
     if(new_array == NULL){
         return -1;
     }
