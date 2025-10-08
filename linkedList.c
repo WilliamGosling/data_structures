@@ -165,3 +165,78 @@ int list_print(LinkedListT* list, void (*print_func)(void*)){
     printf("List size: %zu\n", list->size);
     return 0;
 }
+
+int list_is_empty(LinkedListT* list){
+    
+    if(list == NULL){
+        return -1;
+    }
+    return list->size > 0;
+}
+
+void* list_pop_front_data(LinkedListT* list){
+    if(list == NULL){
+        return NULL;
+    }
+    void* data = list->head->data;
+    list_pop_front(list);
+    return data;
+}
+
+void* list_pop_back_data(LinkedListT* list){
+    if(list == NULL || list->tail == NULL){
+        return NULL;
+    }
+    void* data = list->tail->data;
+    list_pop_back(list);
+    return data;
+}
+
+int list_insert_at(LinkedListT* list, size_t index, void* data){
+    if(list == NULL || list->head == NULL){
+        return -1;
+    }
+    if(index == 0){
+        return list_push_front(list, data);
+    }
+    if(index == list->size){
+        return list_push_back(list, data);
+    }
+
+    NodeT* current = list->head;
+    for(size_t i = 0;i < index;i++){
+        current = current->next;
+    }
+
+    NodeT* node = malloc(sizeof(NodeT));
+    node->data = data;
+    node->next = current;
+    node->prev = current->prev;
+    current->prev->next = node;
+    current->prev = node;
+    list->size++;
+    return 0;
+}
+
+int list_remove_at(LinkedListT* list, size_t index){
+    if(list == NULL || index > list->size){
+        return -1;
+    }
+    if(index == 0){
+        return list_pop_front(list);
+    }
+    if(index == list->size){
+        return list_pop_back(list);
+    }
+
+    NodeT* current = list->head;
+    for(size_t i = 0;i < index;i++){
+        current = current->next;
+    }
+    
+    current->prev->next = current->next;
+    current->next->prev = current->prev;
+    free(current);
+    list->size--;
+    return 0;
+}
