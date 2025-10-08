@@ -10,15 +10,15 @@ typedef struct DynamicArray{
 }DynamicArrayT;
 
 // Returns pointer to the array, NULL if memory allocation fails
-DynamicArrayT* dynamic_array_create(size_t initial_capacity);
+DynamicArrayT* dynamic_array_create(size_t initial_capacity, size_t element_size);
 
 void dynamic_array_destroy(DynamicArrayT* array);
 // Returns 0 on success, -1 if the growing array fails
-int dynamic_array_append(DynamicArrayT* array, int value);
+int dynamic_array_append(DynamicArrayT* array, void* data);
 // Returns 0 on success, -1 if the index is out of bounds
-int dynamic_array_get(DynamicArrayT* array, size_t index, int* out_value);
+int dynamic_array_get(DynamicArrayT* array, size_t index, void* out_value);
 // Returns 0 on success, -1 if the index is out of bounds
-int dynamic_array_set(DynamicArrayT* array, size_t index, int value);
+int dynamic_array_set(DynamicArrayT* array, size_t index, void* value);
 // Returns 0 on success, -1 if the index is out of bounds
 int dynamic_array_remove(DynamicArrayT* array, size_t index);
 // Returns 0 on success, -1 if shrinking array fails

@@ -1,19 +1,21 @@
 #include "graph.h"
 
+static GraphVertex* graph_find_vertex(GraphT* graph, int vertex_id);
+
 GraphT* graph_create(){
 
     GraphT* graph = malloc(sizeof(GraphT));
     if(graph == NULL){
         return NULL;
     }
-    graph->vertices = dynamic_array_create(10);
+    graph->vertices = dynamic_array_create(10, sizeof(GraphVertex));
     if(graph->vertices == NULL){
         free(graph);
         return NULL;
     }
     graph->id_to_index_map = hashmap_create(0);
     if(graph->id_to_index_map == NULL){
-        free(graph->vertices);
+        dynamic_array_destroy(graph->vertices);
         free(graph);
         return NULL;
     }
@@ -30,10 +32,13 @@ int graph_destroy(GraphT* graph){
     }
 
     for(size_t i = 0;i < graph->num_vertices;i++){
-        GraphVertex* vertex = &graph->vertices->data[i];
-        dynamic_array_destroy(vertex->edges);
+        GraphVertex* vertex = dynamic_array_get_element_ptr(graph->vertices, i);
+        if(vertex != NULL){
+            dynamic_array_destroy(vertex->edges);
+        }
     }
     dynamic_array_destroy(graph->vertices);
+    hashmap_destroy(graph->id_to_index_map);
     free(graph);
     return 0;
 }
@@ -43,7 +48,7 @@ int graph_add_vertex(GraphT* graph, int vertex_id){
     if(graph == NULL){
         return -1;
     }
-    char vertex_str_id[128];
+    char vertex_str_id[32];
     snprintf(vertex_str_id, sizeof(vertex_str_id), "%d", vertex_id);
     if(hashmap_has_key(graph->id_to_index_map, vertex_str_id)){
         return 0;
@@ -51,7 +56,7 @@ int graph_add_vertex(GraphT* graph, int vertex_id){
 
     GraphVertex vertex;
     vertex.id = vertex_id;
-    vertex.edges = dynamic_array_create(5);
+    vertex.edges = dynamic_array_create(5, sizeof(EdgeT));
     if(vertex.edges == NULL){
         return -1;
     }
@@ -61,7 +66,7 @@ int graph_add_vertex(GraphT* graph, int vertex_id){
         return -1;
     }
     
-    size_t index = graph->num_vertices - 1;
+    size_t index = graph->vertices->size - 1;
     hashmap_set(graph->id_to_index_map, vertex_str_id, (void*)index);
     graph->num_vertices++;
 
@@ -77,7 +82,7 @@ int graph_add_edge(GraphT* graph, int from_vertex_id, int to_vertex_id, int weig
     GraphVertex* start_vertex = graph_find_vertex(graph, from_vertex_id);
     GraphVertex* end_vertex = graph_find_vertex(graph, to_vertex_id); 
     if(start_vertex == NULL || end_vertex == NULL){
-        return -1;
+        return -2;
     }
 
 
@@ -98,19 +103,15 @@ static GraphVertex* graph_find_vertex(GraphT* graph, int vertex_id){
         return NULL;
     }
 
-    GraphVertex* vertex = hashmap_get(graph->id_to_index_map, vertex_id);
-    if(vertex == NULL){
+    char vertex_str_id[32];
+    snprintf(vertex_str_id, sizeof(vertex_str_id), "%d", vertex_id);
+
+    void* temp = hashmap_get(graph->id_to_index_map, vertex_str_id);
+    if(temp == NULL){
         return NULL;
     }
-    return vertex;
-
-    for(size_t i = 0;i < graph->num_vertices;i++){
-        GraphVertex* vertex = (GraphVertex*)dynamic_array_get_element_ptr(graph->vertices, i);
-        if(vertex->id == vertex_id){
-            return vertex;
-        }
-    }
-    return NULL;
+    size_t index = (size_t)temp;
+    return dynamic_array_get_element_ptr(graph->vertices, index);
 }
 
 int graph_print_neighbours(GraphT* graph, int vertex_id){
@@ -120,7 +121,8 @@ int graph_print_neighbours(GraphT* graph, int vertex_id){
     }
     GraphVertex* vertex = graph_find_vertex(graph, vertex_id);
     if(vertex == NULL){
-        return -1;
+        printf("Vertex %d not found\n", vertex_id);
+        return -2;
     }
     printf("Neighbours of vertex %d\n", vertex_id);
 
@@ -133,10 +135,61 @@ int graph_print_neighbours(GraphT* graph, int vertex_id){
     return 0;
 }
 
-int graph_BFS(GraphT* graph, GraphVertex* source_vertex){
+int graph_BFS(GraphT* graph, int source_vertex_id){
 
-    DynamicArrayT* queue = dynamic_array_create(graph->num_vertices);
-    
+    if(graph == NULL){
+        return -1;
+    }
 
+    char vertex_str_id[32];
+    snprintf(vertex_str_id, sizeof(vertex_str_id), "%d",source_vertex_id);
 
+    void* temp = hashmap_get(graph->id_to_index_map, vertex_str_id);
+    if(temp == NULL){
+        return -2;
+    }
+    size_t index = (size_t)temp;
+
+    int* visited = calloc(graph->num_vertices, sizeof(int));
+    DynamicArrayT* queue = dynamic_array_create(graph->num_vertices, sizeof(size_t));
+    if(queue == NULL || visited == NULL){
+        dynamic_array_destroy(queue);
+        free(visited);
+        return -1;
+    }
+
+    visited[index] = 1;
+
+    if(dynamic_array_append(queue, &index) == -1){
+        dynamic_array_destroy(queue);
+        free(visited);
+        return -1;
+    }
+
+    while(queue->size > 0){
+        size_t current_index;
+        dynamic_array_get(queue, 0, &current_index);
+        dynamic_array_remove(queue, 0);
+
+        GraphVertex* current_vertex = dynamic_array_get_element_ptr(graph->vertices, current_index);
+        if(current_vertex != NULL){
+            printf("Visited Vertex ID: %d\n", current_vertex->id);
+        }
+
+        for(size_t i = 0;i < current_vertex->edges->size;i++){
+            EdgeT* edge = dynamic_array_get_element_ptr(current_vertex->edges, i);
+            GraphVertex* neighbour_vertex = edge->neighbour;
+            snprintf(vertex_str_id, sizeof(vertex_str_id), "%d", neighbour_vertex->id);
+            size_t neighbour_index = (size_t)hashmap_get(graph->id_to_index_map, vertex_str_id);
+
+            if(!visited[neighbour_index]){
+                visited[neighbour_index] = 1;
+                dynamic_array_append(queue, &neighbour_index);
+            }
+        }
+    }
+
+    dynamic_array_destroy(queue);
+    free(visited);
+    return 0;
 }
