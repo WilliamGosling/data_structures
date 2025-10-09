@@ -202,10 +202,18 @@ int list_insert_at(LinkedListT* list, size_t index, void* data){
         return list_push_back(list, data);
     }
 
-    NodeT* current = list->head;
-    for(size_t i = 0;i < index;i++){
-        current = current->next;
+    NodeT* current;
+    if(index < list->size / 2){
+        current = list->head;
+        for(size_t i = 0;i < index;i++){
+            current = current->next;
+        }
+    } else {
+        for(size_t i = list->size - 1;i > index;i--){
+            current = current->prev;
+        }
     }
+    
 
     NodeT* node = malloc(sizeof(NodeT));
     node->data = data;
@@ -228,9 +236,16 @@ int list_remove_at(LinkedListT* list, size_t index){
         return list_pop_back(list);
     }
 
-    NodeT* current = list->head;
-    for(size_t i = 0;i < index;i++){
-        current = current->next;
+    NodeT* current;
+    if(index < list->size / 2){
+        current = list->head;
+        for(size_t i = 0;i < index;i++){
+            current = current->next;
+        }
+    } else {
+        for(size_t i = list->size - 1;i > index;i--){
+            current = current->prev;
+        }
     }
     
     current->prev->next = current->next;
@@ -245,11 +260,18 @@ void* list_get(LinkedListT* list, size_t index){
         return NULL;
     }
 
-    NodeT* current = list->head;
-    for(size_t i = 0;i < index;i++){
-        current = current->next;
+    NodeT* current;
+    if(index < list->size /2){
+        current = list->head;
+        for(size_t i = 0;i < index;i++){
+            current = current->next;
+        }
+    } else {
+        current = list->tail;
+        for(size_t i = list->size - 1;i > index;i--){
+            current = current->prev;
+        }
     }
-
     return current->data;
 }
 
