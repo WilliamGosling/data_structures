@@ -167,15 +167,14 @@ int list_print(LinkedListT* list, void (*print_func)(void*)){
 }
 
 int list_is_empty(LinkedListT* list){
-    
     if(list == NULL){
         return -1;
     }
-    return list->size > 0;
+    return list->size == 0;
 }
 
 void* list_pop_front_data(LinkedListT* list){
-    if(list == NULL){
+    if(list == NULL || list->head == NULL){
         return NULL;
     }
     void* data = list->head->data;
@@ -193,7 +192,7 @@ void* list_pop_back_data(LinkedListT* list){
 }
 
 int list_insert_at(LinkedListT* list, size_t index, void* data){
-    if(list == NULL || list->head == NULL){
+    if(list == NULL || index > list->size){
         return -1;
     }
     if(index == 0){
@@ -238,5 +237,76 @@ int list_remove_at(LinkedListT* list, size_t index){
     current->next->prev = current->prev;
     free(current);
     list->size--;
+    return 0;
+}
+
+void* list_get(LinkedListT* list, size_t index){
+    if(list == NULL || index >= list->size){
+        return NULL;
+    }
+
+    NodeT* current = list->head;
+    for(size_t i = 0;i < index;i++){
+        current = current->next;
+    }
+
+    return current->data;
+}
+
+void* list_get_front(LinkedListT* list){
+    if(list == NULL || list->head == NULL){
+        return NULL;
+    }
+    return list->head->data;
+}
+
+void* list_get_back(LinkedListT* list){
+    if(list == NULL || list->tail == NULL){
+        return NULL;
+    }
+    return list->tail->data;
+}
+
+size_t list_size(LinkedListT* list){
+    return list == NULL ? -1 : list->size;
+}
+
+int list_find(LinkedListT* list, void* data, int (*compare_func)(void*, void*)){
+    if(list == NULL || compare_func == NULL){
+        return -1;
+    }
+    NodeT* current = list->head;
+    int index = 0;
+    while(current != NULL){
+        if(compare_func(current->data, data) == 0){
+            return index;
+        }
+        current = current->next;
+        index++;
+    }
+    return -1;
+}
+
+int list_contains(LinkedListT* list, void* data, int (*compare_func)(void*, void*)){
+    return list_find(list, data, compare_func) != -1;
+}
+
+int list_clear(LinkedListT* list, void(*free_func)(void*)){
+    if(list == NULL){
+        return -1;
+    }
+    NodeT* current = list->head;
+    while(current != NULL){
+        NodeT* temp = current->next;
+        if(free_func != NULL){
+            free_func(current->data);
+        }
+        free(current);
+        current = temp;
+    }
+
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
     return 0;
 }
