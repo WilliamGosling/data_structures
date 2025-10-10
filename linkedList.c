@@ -214,7 +214,6 @@ int list_insert_at(LinkedListT* list, size_t index, void* data){
         }
     }
     
-
     NodeT* node = malloc(sizeof(NodeT));
     node->data = data;
     node->next = current;
