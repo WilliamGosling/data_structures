@@ -5,7 +5,7 @@
 
 #define MINIMUM_CAPACITY 5
 
-unsigned long hash(const char* key){
+static unsigned long hash(const char* key){
 
     unsigned long hash = 5381;
     int c;
@@ -19,14 +19,18 @@ unsigned long hash(const char* key){
 HashmapT* hashmap_create(size_t initial_capacity){
 
     HashmapT* hashmap = malloc(sizeof(struct Hashmap));
-    assert(hashmap);
+    if(hashmap == NULL){
+        return NULL;
+    }
 
     hashmap->capacity = initial_capacity;
     hashmap->count = 0;
     pthread_mutex_init(&hashmap->mutex, NULL);
 
     NodeT** buckets = calloc(initial_capacity, sizeof(struct Node*));
-    assert(buckets);
+    if(buckets == NULL){
+        return NULL;
+    }
     hashmap->buckets = buckets;
     return hashmap;
 }
@@ -92,7 +96,7 @@ void* hashmap_get(HashmapT* map, const char* key){
     return  NULL;
 }
 
-void hashmap_delete(HashmapT* map, const char* key){
+int hashmap_delete(HashmapT* map, const char* key){
 
     pthread_mutex_lock(&map->mutex);
     unsigned long index = hash(key) % map->capacity;
@@ -101,7 +105,7 @@ void hashmap_delete(HashmapT* map, const char* key){
 
     if(node == NULL){
         pthread_mutex_unlock(&map->mutex);
-        return;
+        return -1;
     }
 
     while(node != NULL){
@@ -118,17 +122,18 @@ void hashmap_delete(HashmapT* map, const char* key){
                 hashmap_resize(map, map->capacity / 2);
             }
             pthread_mutex_unlock(&map->mutex);
-            return;
+            return -1;
         }
         prev = node;
         node = node->next;
     }
     pthread_mutex_unlock(&map->mutex);
+    return 0;
 }
 
-void hashmap_destroy(HashmapT* map){
+int hashmap_destroy(HashmapT* map){
     if(map == NULL){
-        return;
+        return -1;
     }
 
     for(long unsigned int i = 0;i < map->capacity;i++){
@@ -143,11 +148,15 @@ void hashmap_destroy(HashmapT* map){
     pthread_mutex_destroy(&map->mutex);
     free(map->buckets);
     free(map);
+    return 0;
 }
 
 HashMapIterator* hashmap_iterator_create(HashmapT* map){
 
     HashMapIterator* iterator = malloc(sizeof(HashMapIterator));
+    if(iterator == NULL){
+        return NULL;
+    }
     pthread_mutex_lock(&map->mutex);
     iterator->map = map;
     iterator->bucket_index = 0;
@@ -174,19 +183,21 @@ NodeT* hashmap_iterate_next(HashMapIterator* iterator){
     return return_node;
 }
 
-void hashmap_iterator_destroy(HashMapIterator* iterator){
+int hashmap_iterator_destroy(HashMapIterator* iterator){
 
     if(iterator == NULL){
-        return;
+        return -1;
     }
-
     free(iterator);
+    return 0;
 }
 
-void hashmap_resize(HashmapT* map, size_t new_capacity){
+int hashmap_resize(HashmapT* map, size_t new_capacity){
 
     NodeT** new_buckets = calloc(new_capacity, sizeof(struct Node*));
-    assert(new_buckets);
+    if(new_buckets == NULL){
+        return -1;
+    }
     NodeT** old_buckets = map->buckets;
     size_t old_capacity = map->capacity;
     map->buckets = new_buckets;
@@ -203,6 +214,7 @@ void hashmap_resize(HashmapT* map, size_t new_capacity){
         }
     }
     free(old_buckets);
+    return 0;
 }
 
 int hashmap_has_key(HashmapT* map, const char* key){
@@ -213,10 +225,10 @@ int hashmap_has_key(HashmapT* map, const char* key){
     return 1;
 }
 
-void hashmap_clear(HashmapT* map){
+int hashmap_clear(HashmapT* map){
 
     if(map == NULL){
-        return;
+        return -1;
     }
 
     pthread_mutex_lock(&map->mutex);
@@ -232,6 +244,7 @@ void hashmap_clear(HashmapT* map){
     }
     map->count = 0;
     pthread_mutex_unlock(&map->mutex);
+    return 0;
 }
 
 char** hashmap_keys(HashmapT* map){

@@ -85,7 +85,6 @@ int graph_add_edge(GraphT* graph, int from_vertex_id, int to_vertex_id, int weig
         return -2;
     }
 
-
     EdgeT edge;
     edge.weight = weight;
     edge.neighbour = end_vertex;

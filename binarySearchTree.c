@@ -18,15 +18,16 @@ BSTree* bst_create(){
     return tree;
 }
 
-void bst_destroy(BSTree* tree){
+int bst_destroy(BSTree* tree){
 
     if(tree == NULL){
-        return;
+        return -1;
     }
 
     destroy_nodes_bst(tree->root);
 
     free(tree);
+    return 0;
 }
 
 int bst_insert(BSTree* tree, int value){

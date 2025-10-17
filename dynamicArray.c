@@ -25,13 +25,14 @@ DynamicArrayT* dynamic_array_create(size_t initial_capacity, size_t element_size
     return array;
 }
 
-void dynamic_array_destroy(DynamicArrayT* array){
+int dynamic_array_destroy(DynamicArrayT* array){
 
     if(array == NULL){
-        return;
+        return -1;
     }
     free(array->data);
     free(array);
+    return 0;
 }
 
 int dynamic_array_append(DynamicArrayT* array, void* data){
