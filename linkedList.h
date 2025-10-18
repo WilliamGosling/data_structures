@@ -45,11 +45,11 @@ int list_pop_back(LinkedListT* list);
 
 // Prints the list contents using the function provided
 // Returns 0 on success, -1 if parsed a NULL argument, -2 if the list is empty
-int list_print(LinkedListT* list, void (*print_func)(void*));
+int list_print(const LinkedListT* list, void (*print_func)(void*));
 
 // Checks if the linked list is empty
 // Returns 1 if the list is empty, 0 if it is not empty 
-int list_is_empty(LinkedListT* list);
+int list_is_empty(const LinkedListT* list);
 
 // Fetches the data from the front of the list & pops that element from the list
 // Returns a pointer to the data, NULL if parsed a NULL argument or the list is empty
@@ -69,27 +69,27 @@ int list_remove_at(LinkedListT* list, size_t index);
 
 // Fetches the data from a given index position
 // Returns a pointer to the data, NULL if parsed a NULL argument or provided index is out of bounds 
-void* list_get(LinkedListT* list, size_t index);
+void* list_get(const LinkedListT* list, size_t index);
 
 // Fetches the data from the front of the list
 // Returns a pointer to the data, NULL if parsed a NULL argument or the list is empty
-void* list_get_front(LinkedListT* list);
+void* list_get_front(const LinkedListT* list);
 
 // Fetches the data from the back of the list
 // Returns a pointer to the data, NULL if parsed a NULL argument or the list is empty
-void* list_get_back(LinkedListT* list);
+void* list_get_back(const LinkedListT* list);
 
 // Gets the size of the list
 // Returns the size of the list, -1 if parsed a NULL argrument
-size_t list_size(LinkedListT* list);
+size_t list_size(const LinkedListT* list);
 
 // Finds the index that data belongs to using the provided compare function
 // Return index value, -1 if the data cannot be matched to an element or if parsed a NULL argument
-int list_find(LinkedListT* list, void* data, int (*compare_func)(void*, void*));
+int list_find(const LinkedListT* list, void* data, int (*compare_func)(void*, void*));
 
 // Checks whether the data is in the list
 // Returns 1 if it is in the list, 0 if it is not in the list
-int list_contains(LinkedListT* list, void* data, int (*compare_func)(void*, void*));
+int list_contains(const LinkedListT* list, void* data, int (*compare_func)(void*, void*));
 
 // Clears the list of all of its elements using the provided free function
 // Returns 0 on success, -1 if parsed a NULL argument

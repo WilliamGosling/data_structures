@@ -113,7 +113,7 @@ static GraphVertex* graph_find_vertex(GraphT* graph, int vertex_id){
     return dynamic_array_get_element_ptr(graph->vertices, index);
 }
 
-int graph_print_neighbours(GraphT* graph, int vertex_id){
+int graph_print_neighbours(const GraphT* graph, int vertex_id){
 
     if(graph == NULL){
         return -1;
@@ -129,12 +129,11 @@ int graph_print_neighbours(GraphT* graph, int vertex_id){
         EdgeT* edge = (EdgeT*)dynamic_array_get_element_ptr(vertex->edges, i);
         int neighbour_id = edge->neighbour->id;
         printf(" ID: %d Weight: %d\n", neighbour_id, edge->weight);
-
     }
     return 0;
 }
 
-int graph_BFS(GraphT* graph, int source_vertex_id){
+int graph_BFS(const GraphT* graph, int source_vertex_id){
 
     if(graph == NULL){
         return -1;

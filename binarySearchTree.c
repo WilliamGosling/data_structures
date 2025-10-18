@@ -65,17 +65,17 @@ int bst_insert(BSTree* tree, int value){
     }
 }
 
-int bst_search(BSTree* tree, int value){
+int bst_search(const BSTree* tree, int value){
 
     if(tree == NULL || tree->root == NULL){
-        return 0;
+        return -1;
     }
     
     BSTNode* current = tree->root;
 
     while(current != NULL){
         if(current->data == value){
-            return 1;
+            return 0;
         }
         if(value < current->data){
             current = current->left;
@@ -83,7 +83,7 @@ int bst_search(BSTree* tree, int value){
             current = current->right;
         }
     }
-    return 0;
+    return -1;
 }
 
 int bst_remove(BSTree* tree, int value){

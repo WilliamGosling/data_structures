@@ -27,8 +27,8 @@ int bst_destroy(BSTree* tree);
 int bst_insert(BSTree* tree, int value);
 
 // Searches the binary search tree 
-// Returns 1 if value found, 0 if failed to find value or if NULL parameter parsed
-int bst_search(BSTree* tree, int value);
+// Returns 0 if value found, -1 if failed to find value or if NULL parameter parsed
+int bst_search(const BSTree* tree, int value);
 
 // Removes a value from the binary search tree
 // Returns 0 if value is removed, -1 if NULL parameter parsed or failed to remove value

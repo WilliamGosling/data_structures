@@ -75,7 +75,7 @@ int hashmap_set(HashmapT* map, const char* key, void* value){
     return 0;
 }
 
-void* hashmap_get(HashmapT* map, const char* key){
+void* hashmap_get(const HashmapT* map, const char* key){
 
     pthread_mutex_lock(&map->mutex);
     unsigned long index = hash(key) % map->capacity;
@@ -122,13 +122,13 @@ int hashmap_delete(HashmapT* map, const char* key){
                 hashmap_resize(map, map->capacity / 2);
             }
             pthread_mutex_unlock(&map->mutex);
-            return -1;
+            return 0;
         }
         prev = node;
         node = node->next;
     }
     pthread_mutex_unlock(&map->mutex);
-    return 0;
+    return -1;
 }
 
 int hashmap_destroy(HashmapT* map){
@@ -217,7 +217,7 @@ int hashmap_resize(HashmapT* map, size_t new_capacity){
     return 0;
 }
 
-int hashmap_has_key(HashmapT* map, const char* key){
+int hashmap_has_key(const HashmapT* map, const char* key){
 
    if(hashmap_get(map, key) == NULL){
         return 0;

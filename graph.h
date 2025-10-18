@@ -42,10 +42,10 @@ int graph_add_edge(GraphT* graph, int from_vertex_id, int to_vertex_id, int weig
 
 // Prints all the neighbours of the given vertex ID
 // Returns 0 on success, -1 if parsed NULL parameter, -2 if failed to find vertex
-int graph_print_neighbours(GraphT* graph, int vertex_id);
+int graph_print_neighbours(const GraphT* graph, int vertex_id);
 
 // Performs a breadth-first search of the given graph
 // Returns 0 on success, -1 if parsed NULL parameter or memory allocation failed, -2 if failed to get hashmap
-int graph_BFS(GraphT* graph, int source_vertex_id);
+int graph_BFS(const GraphT* graph, int source_vertex_id);
 
 #endif

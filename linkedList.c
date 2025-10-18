@@ -141,7 +141,7 @@ int list_pop_back(LinkedListT* list){
     return 0;
 }
 
-int list_print(LinkedListT* list, void (*print_func)(void*)){
+int list_print(const LinkedListT* list, void (*print_func)(void*)){
 
     if(list == NULL){
         return -1;
@@ -166,7 +166,7 @@ int list_print(LinkedListT* list, void (*print_func)(void*)){
     return 0;
 }
 
-int list_is_empty(LinkedListT* list){
+int list_is_empty(const LinkedListT* list){
     if(list == NULL){
         return -1;
     }
@@ -254,7 +254,7 @@ int list_remove_at(LinkedListT* list, size_t index){
     return 0;
 }
 
-void* list_get(LinkedListT* list, size_t index){
+void* list_get(const LinkedListT* list, size_t index){
     if(list == NULL || index >= list->size){
         return NULL;
     }
@@ -274,25 +274,25 @@ void* list_get(LinkedListT* list, size_t index){
     return current->data;
 }
 
-void* list_get_front(LinkedListT* list){
+void* list_get_front(const LinkedListT* list){
     if(list == NULL || list->head == NULL){
         return NULL;
     }
     return list->head->data;
 }
 
-void* list_get_back(LinkedListT* list){
+void* list_get_back(const LinkedListT* list){
     if(list == NULL || list->tail == NULL){
         return NULL;
     }
     return list->tail->data;
 }
 
-size_t list_size(LinkedListT* list){
+size_t list_size(const LinkedListT* list){
     return list == NULL ? -1 : list->size;
 }
 
-int list_find(LinkedListT* list, void* data, int (*compare_func)(void*, void*)){
+int list_find(const LinkedListT* list, void* data, int (*compare_func)(void*, void*)){
     if(list == NULL || compare_func == NULL){
         return -1;
     }
@@ -308,7 +308,7 @@ int list_find(LinkedListT* list, void* data, int (*compare_func)(void*, void*)){
     return -1;
 }
 
-int list_contains(LinkedListT* list, void* data, int (*compare_func)(void*, void*)){
+int list_contains(const LinkedListT* list, void* data, int (*compare_func)(void*, void*)){
     return list_find(list, data, compare_func) != -1;
 }
 

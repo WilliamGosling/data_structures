@@ -33,7 +33,7 @@ int hashmap_set(HashmapT* map, const char* key, void* value);
 
 // Fetches the data at the given key
 // Returns a pointer to the key value, NULL if the node doesn't exist
-void* hashmap_get(HashmapT* map, const char* key);
+void* hashmap_get(const HashmapT* map, const char* key);
 
 // Deletes a key-value pair at a given key
 // Returns 0 on success, -1 if node is not found 

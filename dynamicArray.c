@@ -55,7 +55,7 @@ int dynamic_array_append(DynamicArrayT* array, void* data){
     return 0;
 }
 
-int dynamic_array_get(DynamicArrayT* array, size_t index, void* out_value){
+int dynamic_array_get(const DynamicArrayT* array, size_t index, void* out_value){
 
     if(array == NULL || out_value == NULL){
         return -1;
@@ -128,8 +128,17 @@ void* dynamic_array_get_element_ptr(DynamicArrayT* array, size_t index){
     if(array == NULL || index >= array->size){
         return NULL;
     }
-
     char* index_memory = (char*)array->data + (index * array->element_size);
+
+    return index_memory;
+}
+
+const void* dynamic_array_get_ptr_const(const DynamicArrayT* array, size_t index){
+
+    if(array == NULL || index >= array->size){
+        return NULL;
+    }
+    const char* index_memory = (const char*)array->data + (index * array->element_size);
 
     return index_memory;
 }
