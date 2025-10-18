@@ -61,7 +61,7 @@ int hashmap_resize(HashmapT* map, size_t new_capacity);
 
 // Checks whether the hashmap has index at a given key
 // Returns 1 if the value exists in the hashmap, else returns 0 
-int hashmap_has_key(HashmapT* map, const char* key);
+int hashmap_has_key(const HashmapT* map, const char* key);
 
 // Frees all the nodes in the hashmap
 // Returns 0 on success, -1 if parsed a NULL hashmap
